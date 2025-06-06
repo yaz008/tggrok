@@ -81,6 +81,7 @@ class Grok:
         *,
         process: Callable[[str], T] | None = None,
         timeout: float | None = None,
+        mark_as_read: bool = True,
         keep_context: bool = True,
     ) -> T:
         run_coroutine_threadsafe(
@@ -92,6 +93,11 @@ class Grok:
             result: T = process(response) if process is not None else cast(T, response)
             if not keep_context:
                 self.reset_dialog()
+            if mark_as_read:
+                run_coroutine_threadsafe(
+                    coro=self.__tg.read_chat_history(chat_id='@GrokAI'),
+                    loop=self.__tg.loop,
+                ).result()
             return result
         except Empty:
             raise TimeoutError(f'@GrokAI did not respond in {timeout} seconds')
