@@ -1,0 +1,91 @@
+[project]
+name = "tggrok"
+version = "0.0.0"
+description = "Access GrokAI through Telegram"
+authors = [{ name = "Emelianov Artem", email = "polyfoam3758@proton.me" }]
+dependencies = ["Pyrogram", "TgCrypto", "python-dotenv", "jsonschema", "cattrs"]
+requires-python = ">=3.13"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+keywords = ["telegram", "pyrogram", "api", "llm", "grok"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+urls = {"Homepage" = "https://github.com/yaz008/tggrok"}
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+dev = ["isort", "black", "flake8-pyproject", "mypy", "pre-commit"]
+pypi = ["build", "twine"]
+
+[tool.isort]
+py_version = "all"
+skip_gitignore = true
+line_length = 88
+multi_line_output = 3
+use_parentheses = true
+atomic = true
+lines_before_imports = 0
+lines_after_imports = 2
+combine_star = true
+include_trailing_comma = true
+from_first = true
+verbose = true
+force_alphabetical_sort_within_sections = true
+profile = "black"
+honor_noqa = true
+src_paths = ["src"]
+remove_redundant_aliases = true
+float_to_top = true
+only_modified = true
+star_first = true
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+include = '\.pyi?$'
+skip-string-normalization = true
+
+[tool.flake8]
+exclude = [".venv", ".env", ".git", "__pycache__"]
+count = true
+max-line-length = 88
+statistics = true
+max-complexity = 8
+
+[tool.mypy]
+python_version = "3.13"
+platform = "win32"
+disallow_any_unimported = true
+disallow_any_decorated = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+allow_untyped_globals = false
+allow_redefinition = false
+disable_error_code = ["import-untyped"]
+extra_checks = true
+implicit_reexport = true
+strict_equality = true
+strict_bytes = true
+show_error_context = true
+show_column_numbers = true
+show_error_code_links = true
+pretty = true
+error_summary = true
+warn_incomplete_stub = true

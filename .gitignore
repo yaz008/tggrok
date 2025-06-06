@@ -1,0 +1,10 @@
+__pycache__
+.mypy_cache
+.venv
+.pypirc
+*.egg-info
+*.session
+*.session-journal
+dist
+build
+src/__test__.py
