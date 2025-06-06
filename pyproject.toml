@@ -1,6 +1,6 @@
 [project]
 name = "tggrok"
-version = "0.1.1"
+version = "0.1.2"
 description = "Access GrokAI through Telegram"
 authors = [{ name = "Emelianov Artem", email = "polyfoam3758@proton.me" }]
 dependencies = ["Pyrogram", "TgCrypto", "python-dotenv", "jsonschema", "cattrs"]
