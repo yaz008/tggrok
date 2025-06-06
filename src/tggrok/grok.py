@@ -94,13 +94,16 @@ class Grok:
             if not keep_context:
                 self.reset_dialog()
             if mark_as_read:
-                run_coroutine_threadsafe(
-                    coro=self.__tg.read_chat_history(chat_id='@GrokAI'),
-                    loop=self.__tg.loop,
-                ).result()
+                self.mark_as_read()
             return result
         except Empty:
             raise TimeoutError(f'@GrokAI did not respond in {timeout} seconds')
+
+    def mark_as_read(self) -> None:
+        run_coroutine_threadsafe(
+            coro=self.__tg.read_chat_history(chat_id='@GrokAI'),
+            loop=self.__tg.loop,
+        ).result()
 
     def reset_dialog(self) -> None:
         run_coroutine_threadsafe(
