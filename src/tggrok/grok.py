@@ -78,8 +78,10 @@ class Grok:
     def ask[T = str](  # noqa: E251
         self,
         prompt: str,
+        *,
         process: Callable[[str], T] | None = None,
         timeout: float | None = None,
+        keep_context: bool = True,
     ) -> T:
         run_coroutine_threadsafe(
             coro=self.__tg.send_message(chat_id='@GrokAI', text=prompt),
@@ -87,7 +89,10 @@ class Grok:
         )
         try:
             response: str = self.__response_queue.get(timeout=timeout)
-            return process(response) if process is not None else cast(T, response)
+            result: T = process(response) if process is not None else cast(T, response)
+            if not keep_context:
+                self.reset_dialog()
+            return result
         except Empty:
             raise TimeoutError(f'@GrokAI did not respond in {timeout} seconds')
 
