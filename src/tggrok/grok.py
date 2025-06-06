@@ -6,7 +6,7 @@ from pathlib import Path
 from queue import Empty, Queue
 from re import match
 from threading import Event, Thread
-from typing import cast, ClassVar
+from typing import Any, cast, ClassVar, Coroutine
 
 from pyrogram.client import Client
 from pyrogram.enums import ParseMode
@@ -75,6 +75,9 @@ class Grok:
         if self.__response_queue.empty():
             self.__response_queue.put_nowait(response.text)
 
+    def __run_coroutine[T](self, coro: Coroutine[Any, Any, T]) -> T:
+        return run_coroutine_threadsafe(coro=coro, loop=self.__tg.loop).result()
+
     def ask[T = str](  # noqa: E251
         self,
         prompt: str,
@@ -84,10 +87,7 @@ class Grok:
         mark_as_read: bool = True,
         keep_context: bool = True,
     ) -> T:
-        run_coroutine_threadsafe(
-            coro=self.__tg.send_message(chat_id='@GrokAI', text=prompt),
-            loop=self.__tg.loop,
-        )
+        self.__run_coroutine(self.__tg.send_message(chat_id='@GrokAI', text=prompt))
         try:
             response: str = self.__response_queue.get(timeout=timeout)
             result: T = process(response) if process is not None else cast(T, response)
@@ -100,13 +100,7 @@ class Grok:
             raise TimeoutError(f'@GrokAI did not respond in {timeout} seconds')
 
     def mark_as_read(self) -> None:
-        run_coroutine_threadsafe(
-            coro=self.__tg.read_chat_history(chat_id='@GrokAI'),
-            loop=self.__tg.loop,
-        ).result()
+        self.__run_coroutine(self.__tg.read_chat_history(chat_id='@GrokAI'))
 
     def reset_dialog(self) -> None:
-        run_coroutine_threadsafe(
-            coro=self.__tg.send_message(chat_id='@GrokAI', text='/newchat'),
-            loop=self.__tg.loop,
-        ).result()
+        self.__run_coroutine(self.__tg.send_message(chat_id='@GrokAI', text='/newchat'))
