@@ -28,6 +28,7 @@ class Grok:
     phone_number: str
     parse_mode: ParseMode = ParseMode.DEFAULT
     workdir: str = str(Path.cwd())
+    session_string: str | None = None
     hide_password: bool = True
     timeout: float | None = None
     __response_queue: Queue[str] = field(init=False)
@@ -52,6 +53,7 @@ class Grok:
             app_version=f'GrokAI-{get_version('tggrok')}',
             device_model=f'PythonGrokAPI-{get_version('tggrok')}',
             system_version=f'GrokAPI-{get_version('tggrok')}',
+            session_string=self.session_string,  # type: ignore[arg-type]
             workdir=str(self.workdir),
             parse_mode=self.parse_mode,
             hide_password=self.hide_password,
@@ -104,3 +106,6 @@ class Grok:
 
     def reset_dialog(self) -> None:
         self.__run_coroutine(self.__tg.send_message(chat_id='@GrokAI', text='/newchat'))
+
+    def get_session_string(self) -> str:
+        return cast(str, self.__run_coroutine(self.__tg.export_session_string()))
